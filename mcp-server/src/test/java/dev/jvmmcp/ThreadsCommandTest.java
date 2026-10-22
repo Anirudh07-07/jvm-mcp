@@ -291,6 +291,22 @@ class ThreadsCommandTest {
     }
 
     @Test
+    @DisplayName("detaches VirtualMachine when JMX connection fails")
+    void shouldDetachWhenJmxConnectFails() throws Exception {
+        long targetPid = 999999L;
+        MemoryCommandTest.StubVirtualMachine mockVm = new MemoryCommandTest.StubVirtualMachine(false);
+        when(mockAttachService.attach(String.valueOf(targetPid)))
+            .thenReturn(AttachResult.success(String.valueOf(targetPid), mockVm));
+
+        ThreadsCommand command = new ThreadsCommand(mockAttachService);
+        command.pid = targetPid;
+
+        int exitCode = command.call();
+        assertThat(exitCode).isEqualTo(1);
+        org.mockito.Mockito.verify(mockAttachService).detach(mockVm);
+    }
+
+    @Test
     @DisplayName("threads command displays virtual thread counts in summary when available")
     void shouldDisplayVirtualThreadCountInSummary() throws Exception {
         long targetPid = 100L;
