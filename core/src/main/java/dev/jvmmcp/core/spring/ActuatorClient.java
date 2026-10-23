@@ -371,14 +371,10 @@ public class ActuatorClient {
         try {
             allFutures.join();
         } catch (Exception ex) {
-<<<<<<< HEAD
             if (ex.getCause() instanceof InterruptedException || Thread.currentThread().isInterrupted()) {
                 Thread.currentThread().interrupt();
             }
-            System.err.println("Batch metrics operation timed out: " + ex.getMessage());
-=======
             LOGGER.log(Logger.Level.WARNING, "Batch metrics operation timed out: {0}", ex.getMessage());
->>>>>>> main
         }
 
         for (MetricBatchTask task : tasks) {
